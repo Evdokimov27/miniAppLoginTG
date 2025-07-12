@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Вход через Telegram</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+      padding: 2em;
+      text-align: center;
+    }
+    button {
+      font-size: 18px;
+      padding: 12px 24px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Добро пожаловать в MiniApp</h2>
+  <p id="status">Ожидаем подтверждение...</p>
+  <script>
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+
+    const user = Telegram.WebApp.initDataUnsafe.user;
+
+    if (user) {
+      document.getElementById("status").innerText = `Привет, ${user.first_name}!`;
+    }
+
+    // Ничего отправлять не нужно — Telegram сам создаст бизнес-соединение
+    // и отправит его в Update.BusinessConnection вашему боту
+  </script>
+</body>
+</html>
