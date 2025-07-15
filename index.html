@@ -1,41 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Telegram WebApp + Unity</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    let gameInstance;
-
-    // Функция вызывается из Unity после загрузки
-    function onUnityLoaded(instance) {
-      gameInstance = instance;
-
-      const tg = window.Telegram.WebApp;
-      tg.expand(); // Расширяет на весь экран
-
-      const user = tg.initDataUnsafe.user;
-
-      if (user) {
-        const fullName = user.first_name + " " + (user.last_name || "");
-        const username = user.username || "";
-        const userId = user.id.toString();
-
-        // Отправка данных в Unity
-        gameInstance.SendMessage("TelegramManager", "OnTelegramUserData", `${fullName}|${username}|${userId}`);
-      }
-    }
-  </script>
-</head>
-<body>
-  <canvas id="unity-canvas"></canvas>
-  <script src="Build/UnityLoader.js"></script>
-  <script>
-    createUnityInstance(document.querySelector("#unity-canvas"), {
-      dataUrl: "Build/build.data",
-      frameworkUrl: "Build/build.framework.js",
-      codeUrl: "Build/build.wasm"
-    }).then(onUnityLoaded);
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sequence Unity Demo</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
