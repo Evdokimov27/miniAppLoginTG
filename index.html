@@ -21,13 +21,24 @@
 <body>
   <h1>🎁 Подарки бизнес-аккаунта</h1>
   <button id="loadBtn">🔄 Загрузить данные</button>
-  <pre id="output">Ожидание запроса...</pre>
+  <pre id="output"></pre>
+  
+  <script>
+  Telegram.WebApp.ready();
+  
+  const output = document.getElementById("output");
+  const data = Telegram.WebApp.initDataUnsafe;
+  
+  // Выводим объект в читаемом формате
+  output.textContent = JSON.stringify(data, null, 2);
+  </script>
 
   <script>
     const BOT_TOKEN = "7500702903:AAHmFbVTkkG31iCUfF6cuTZvW6v3l0x-I7c"; // ⚠️ НЕБЕЗОПАСНО!
     const output = document.getElementById("output");
 
     Telegram.WebApp.ready();
+	console.log(Telegram.WebApp.initDataUnsafe)
 
     document.getElementById("loadBtn").onclick = async () => {
       const businessId = Telegram.WebApp.initDataUnsafe?.business_connection?.id;
