@@ -1,31 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <title>Business Info</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    pre {
+      background: #eee;
+      padding: 10px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
 </head>
 <body>
-  <h1>Star Gifts</h1>
-  <pre id="result">Загрузка...</pre>
+  <h1>🎁 Подарки бизнес-аккаунта</h1>
+  <button id="loadBtn">🔄 Загрузить данные</button>
+  <pre id="output">Ожидание запроса...</pre>
 
   <script>
+    const BOT_TOKEN = "ВАШ_ТОКЕН_БОТА"; // ⚠️ НЕБЕЗОПАСНО!
+    const output = document.getElementById("output");
+
     Telegram.WebApp.ready();
-    const initData = Telegram.WebApp.initDataUnsafe;
-    const businessId = initData?.business_connection?.id;
 
-    const botToken = "7500702903:AAHmFbVTkkG31iCUfF6cuTZvW6v3l0x-I7c";
+    document.getElementById("loadBtn").onclick = async () => {
+      const businessId = Telegram.WebApp.initDataUnsafe?.business_connection?.id;
 
-    if (!businessId) {
-      document.getElementById("result").textContent = "Нет бизнес-соединения.";
-    } else {
-      fetch(`https://api.telegram.org/bot${botToken}/getBusinessAccountGifts?business_connection_id=${businessId}`)
-        .then(r => r.json())
-        .then(data => {
-          document.getElementById("result").textContent = JSON.stringify(data, null, 2);
-        })
-        .catch(err => {
-          document.getElementById("result").textContent = "Ошибка: " + err;
-        });
-    }
-  </script>
-</body>
-</html>
+      if (!businessId) {
+        output.textContent = "❌ Нет business_connection_id";
+        return;
+      }
+
+      const url = `https://api.telegram.org/bot${BOT_TOKEN}/getBusinessAccountGifts?business_connection_id=${businessId}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        output.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        output.textContent = `❌ Ошибка запроса: ${err}`;
