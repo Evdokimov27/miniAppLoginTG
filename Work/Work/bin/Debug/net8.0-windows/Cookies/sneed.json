@@ -1,0 +1,272 @@
+[
+  {
+    "Name": "_dd_s",
+    "Value": "aid=e1efdbbe-0f87-4b7c-b86c-da2525d3a563&rum=0&expire=1753807574394",
+    "Domain": "www.marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-07-29T20:31:21+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "__eoi",
+    "Value": "ID=9a0dc97a29fd07f3:T=1753806737:RT=1753806737:S=AA-AfjYbUjSJO1IMsv4T74APu2Yq",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-01-25T20:32:17+04:00",
+    "HttpOnly": false,
+    "Secure": true
+  },
+  {
+    "Name": "__gpi",
+    "Value": "UID=0000111a6def06e4:T=1753806737:RT=1753806737:S=ALNI_MYquF-pLBiQAqfd3nL8jFI89bWTuA",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-08-23T20:32:17+04:00",
+    "HttpOnly": false,
+    "Secure": true
+  },
+  {
+    "Name": "aws-waf-token",
+    "Value": "695c8d08-ad9b-41c2-988f-e9d20c786f88:CQoAdC5zWN1MAgAA:c2mn1cDQUi4rO6MJn4UkN7T0p4xpnbyxsaf55Gtizze/LAO+7r1JfubavUm1vViSlPwElrB4hiX9V1RQ1phtJNQKp2jSSHGLXBX5JaQmQ/efwitBQs1vdP2c3LZHwH3iHLxmr5iE5CejOS8kn4n9ep8/DYYn8SMTIpT8aUTfPwjR5xSOGuY9ttJ7VMZSnz/cOolo7x9080tivmWXlZ2fK/HV2mTDyvm87QcFgVWFyyQOg0+00PtfKg056g==",
+    "Domain": ".www.marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2025-08-02T20:31:21+04:00",
+    "HttpOnly": false,
+    "Secure": true
+  },
+  {
+    "Name": "__gads",
+    "Value": "ID=21de681f35dc12e4:T=1753806737:RT=1753806737:S=ALNI_Mb2jstdiDB6WTZmL8_eVqWakk2c4A",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-08-23T20:32:17+04:00",
+    "HttpOnly": false,
+    "Secure": true
+  },
+  {
+    "Name": "cto_bundle",
+    "Value": "IPDhhV9XJTJGSHRYb0N6S0pLeTA0Z3RUTEt6RzFmYVVySWtzJTJGeEQ2T2UyanFENzJ3bU02SVpxMSUyRmd4JTJCYVBNckdrSmtZWEglMkJvODNQRXVEbXE4ejZFQkhyYTRGeEE4cUMzY3hFb0FnSUJPRkhyMnhRUDNiVjZzWVdIQ3RqSUVremQ0N2lubUE0ekdGNU9QTEtLellxUXRGQkdiUUVIa20lMkY2RjNPMnRmdUJLZFZ3aGphdEUlM0Q",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-08-23T20:31:17+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "_uetvid",
+    "Value": "7366f8906c9911f099f8197a13bdf5a6",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-08-23T20:31:17+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "consentDate",
+    "Value": "2025-07-29T16:32:14.835Z",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-07-29T20:31:14+04:00",
+    "HttpOnly": false,
+    "Secure": true
+  },
+  {
+    "Name": "_uetsid",
+    "Value": "7366de906c9911f093b57da64335c4e5",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2025-07-30T20:31:17+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "consentUUID",
+    "Value": "b7e1b306-5ef3-4fa5-ae44-fdc5e2afc09a_46",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-07-29T20:31:14+04:00",
+    "HttpOnly": false,
+    "Secure": true
+  },
+  {
+    "Name": "cto_bidid",
+    "Value": "GMv68V9rbXFqVkJPbnhBcjJZS1Z1MW9WdXdwQkFUd2xTcE82NkM0Y1NjUzJkWE1qclhwa3NNdWFGY0tiTWhHcEI3RTFpbmdTJTJGMWg2WTdjbyUyQmVwJTJGZXRNejluQSUzRCUzRA",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-08-24T00:31:11+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "euconsent-v2",
+    "Value": "CQVUJYAQVUJYAAGABCENB0F8AP_gAEPgABpYJNNB5G5USSFDcTp2aJsAcIQX4VhIYkAhBgKBAyAByBKAIIwCkEEQJASAICACAAAAIAAAIAAAGAAAAAAAAIABAAAEQAAAAAIIIAAAgAABAAAIAAAIAAAAAAAAAMAEEgAAkAAAABIAWNgAAAAAAQAAAAAAAIABAACAAAAAAAAAAAAAACAAAAAAAAAAAAAAABAIAAAAAAEEb4CQACgALgAkACOAI4ATgA5AB3QEHAQgAiIBHADtgJiAWyAvMBiwDJgI3gFhIDIAC4AKAAqABwADwAIIAZABoADwAJgAVQA_ACEAEcAK0AYYAygBzgDuAH6ASIAkwCjwFsAMkAZOAy4dAcAAXABQAFQAOAAggBkAGgAPAAmABVADEAH4ATgArQBhgDKAGiAOcAdwA_QCLAEiAJMAi8BR4C2AGSAMngZYBlwDix4AEAiI4ACAFAhAIAAWABQAKoAYgA_ADnAHcAyclAPAAWABQADgAPAAmABVADEAI4AVoCLwFHgLYAZIAycBlhIACACopAWAAXABQAFQAOAAggBkAGgAPAAmABVADEAH4AVoAygBogDnAH6ARYAkQCLwFsAMkAZPAywDLioAEABRQACAFAtABAHc.f_gAAAAAAAAA",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-07-29T20:31:14+04:00",
+    "HttpOnly": false,
+    "Secure": true
+  },
+  {
+    "Name": "_gcl_au",
+    "Value": "1.1.1517717747.1753806675",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2025-10-27T20:31:15+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "MpShoppingCartTotalProducts",
+    "Value": "0",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": null,
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "cs_fpid",
+    "Value": "66cxqxhcprwu94w97skuhlngzhm18of2bjs1",
+    "Domain": "www.marktplaats.nl",
+    "Path": "/",
+    "Expiry": null,
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "_sp_su",
+    "Value": "false",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-07-29T20:31:12+04:00",
+    "HttpOnly": false,
+    "Secure": true
+  },
+  {
+    "Name": "MpSecurity",
+    "Value": "NTcxOTA1Mzc6MTc4NTM0MjczMTM5ODo3ZWM1ZWQyZjhhNzJiYTAzNTk4ZjYyMGY2ZDJhNWNmMWU3ZDk4OTgw",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-07-29T20:31:11+04:00",
+    "HttpOnly": true,
+    "Secure": true
+  },
+  {
+    "Name": "FPLC",
+    "Value": "0mIzUKnSjok7PJkDQuDlpxWPOuvnkyvKYMOXRrow2dTJldJT%2BnxFnCFKTaFSA9aYz0K0QepIIUBobWfn4yguej65Em%2BbLlKXsI7s97xqJ72obKCZpVFW298INWC%2Bzg%3D%3D",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2025-07-30T16:30:57+04:00",
+    "HttpOnly": false,
+    "Secure": true
+  },
+  {
+    "Name": "MpSslSecurity",
+    "Value": "NTcxOTA1Mzc6MTc4NTM0MjczMTM5ODo3YzhjNmFmNzY0YjYxM2FjN2JjNjFiZDRkYzdkNmU4ODg2MzFkMjQ5",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-07-29T20:31:11+04:00",
+    "HttpOnly": true,
+    "Secure": true
+  },
+  {
+    "Name": "FPID",
+    "Value": "FPID2.2.%2FtcRswvI6LnjyckEtiybl4mLpz%2Blndfg%2F1wxrZKIl7U%3D.1753806657",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-09-02T20:31:15+04:00",
+    "HttpOnly": true,
+    "Secure": true
+  },
+  {
+    "Name": "_ga_YECTZ2BX2K",
+    "Value": "GS2.1.s1753806653$o1$g1$t1753806675$j59$l0$h915437157",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-09-02T20:31:15+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "MpConsentState",
+    "Value": "AdobeAudienceManager,Google,Facebook,Criteo,GoogleAnalytics",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-07-29T20:31:14+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "persistentRandomID",
+    "Value": "id-4utkm1t41-1753806653397",
+    "Domain": "www.marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-07-29T20:30:53+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "_ga",
+    "Value": "GA1.1.856811001.1753806657",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-09-02T20:31:12+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "g_state",
+    "Value": "{\"i_l\":0}",
+    "Domain": "www.marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-01-25T20:31:10+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "__mpx",
+    "Value": "627683c5-32d9-4849-b537-c8ce6fb6e686",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-01-25T20:31:11+04:00",
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "MpHpInitialFeed",
+    "Value": "0",
+    "Domain": "www.marktplaats.nl",
+    "Path": "/",
+    "Expiry": null,
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "luckynumber",
+    "Value": "1019637494",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": "2026-07-29T20:31:12+04:00",
+    "HttpOnly": true,
+    "Secure": false
+  },
+  {
+    "Name": "gtm_session",
+    "Value": "1753806653352",
+    "Domain": "www.marktplaats.nl",
+    "Path": "/",
+    "Expiry": null,
+    "HttpOnly": false,
+    "Secure": false
+  },
+  {
+    "Name": "MpSession",
+    "Value": "96ade635-266f-48ad-967c-d5bdc37c3980",
+    "Domain": ".marktplaats.nl",
+    "Path": "/",
+    "Expiry": null,
+    "HttpOnly": true,
+    "Secure": false
+  }
+]
