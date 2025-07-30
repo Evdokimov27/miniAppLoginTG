@@ -96,6 +96,7 @@ namespace Work
             File.WriteAllText(filePath, JsonConvert.SerializeObject(cookies, Formatting.Indented));
 
             listBoxCookies.Items.Clear();
+
             foreach (var file in Directory.GetFiles(folderPath, "*.json"))
             {
                 listBoxCookies.Items.Add(Path.GetFileNameWithoutExtension(file));
@@ -708,12 +709,18 @@ namespace Work
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            driver.Quit();
+            driver?.Quit();
         }
 
         private void Form1_Load_1(object sender, EventArgs e)
         {
+            listBoxCookies.Items.Clear();
+            string folderPath = Path.Combine(Application.StartupPath, "Cookies");
 
+            foreach (var file in Directory.GetFiles(folderPath, "*.json"))
+            {
+                listBoxCookies.Items.Add(Path.GetFileNameWithoutExtension(file));
+            }
         }
     }
 
