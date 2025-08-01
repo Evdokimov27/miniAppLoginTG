@@ -1,4 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Newtonsoft.Json;
+
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -12,6 +21,7 @@ namespace Work
     {
         private UndetectedChromeDriver driver;
         private readonly string driverPath = $"{Application.StartupPath}/chromedriver.exe";
+        private readonly string chromeProfileDir = Path.Combine(Application.StartupPath, "chrome_profile");
 
         public Form1()
         {
@@ -40,7 +50,8 @@ namespace Work
                         driverExecutablePath: driverPath,
                         options: BuildChromeOptionsWithProxy()
                     );
-                    NavigateFast("https://www.marktplaats.nl");
+
+                    NavigateFast("https://www.etsy.com/");
 
                     Invoke(new Action(() =>
                     {
@@ -104,6 +115,7 @@ namespace Work
 
             MessageBox.Show($"Куки сохранены в файл: {cookieName}.json");
         }
+
         private async void buttonSend_Click(object sender, EventArgs e)
         {
             string selectedName = listBoxCookies.SelectedItem?.ToString();
@@ -149,8 +161,6 @@ namespace Work
                 if (res == DialogResult.OK) return;
             }
 
-
-
             string folderPath = Path.Combine(Application.StartupPath, "Cookies");
             string filePath = Path.Combine(folderPath, selectedName + ".json");
 
@@ -168,19 +178,36 @@ namespace Work
                 RestartDriver();
 
                 driver = UndetectedChromeDriver.Create(
-                        driverExecutablePath: driverPath,
-                        options: BuildChromeOptionsWithProxy()
-                    );
-                NavigateFast("https://www.marktplaats.nl/");
+                    driverExecutablePath: driverPath,
+                    options: BuildChromeOptionsWithProxy()
+                );
 
-                AddCookiesSafe(driver, cookieList);
+                // Разделяем ссылки по доменам
+                var etsyLinks = urls.Where(u => SafeGetHost(u).Contains("etsy.com")).ToList();
+                var marktplaatsLinks = urls.Where(u => SafeGetHost(u).Contains("marktplaats.nl")).ToList();
 
-                await SendMessageToAds(message, urls, perLinkTexts);
+                // --- Etsy: авто-выбор вариаций + скриншоты ---
+                if (etsyLinks.Count > 0)
+                {
+                    NavigateFast("https://www.etsy.com/");
+                    // Etsy обычно не требует логина для выбора вариаций, куки не нужны
+                    await AutoSelectEtsyVariations(etsyLinks);
+                }
+
+                // --- Marktplaats: авторизация по куки + отправка сообщений ---
+                if (marktplaatsLinks.Count > 0)
+                {
+                    NavigateFast("https://www.marktplaats.nl/");
+                    AddCookiesSafe(driver, cookieList);
+                    await SendMessageToAds(message, marktplaatsLinks, perLinkTexts);
+                }
 
                 MessageBox.Show("Готово. Обработка ссылок завершена.");
             }
             catch (Exception ex)
-            { }
+            {
+                MessageBox.Show("Ошибка: " + ex.Message);
+            }
             finally
             {
                 RestartDriver();
@@ -199,6 +226,8 @@ namespace Work
                 listBoxCookies.Items.Add(Path.GetFileNameWithoutExtension(file));
             }
         }
+
+        // ===================== Marktplaats отправка =====================
 
         public async Task SendMessageToAds(string messageTemplate, List<string> urls, Dictionary<string, string> perLinkTexts = null)
         {
@@ -260,7 +289,6 @@ namespace Work
                     Log($"[ERR] {url} -> {ex.Message}");
                 }
             }
-
         }
 
         public async Task OpenAdAndSendMessage(string message, string url)
@@ -269,8 +297,9 @@ namespace Work
 
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(25));
             wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
+
             NavigateFast(url);
-            TryAcceptCookies(driver, wait);
+            TryAcceptCookies_Marktplaats(driver);
 
             var berichtBtn = wait.Until(d =>
                 d.FindElements(By.XPath("//button[normalize-space()='Bericht' or .//span[normalize-space()='Bericht']]"))
@@ -315,10 +344,10 @@ namespace Work
             {
                 var selectors = new By[]
                 {
-            By.CssSelector("textarea#message"),
-            By.CssSelector("textarea[name='message']"),
-            By.CssSelector("textarea.hz-TextField-input.hz-TextField-input--multiline"),
-            By.CssSelector("textarea")
+                    By.CssSelector("textarea#message"),
+                    By.CssSelector("textarea[name='message']"),
+                    By.CssSelector("textarea.hz-TextField-input.hz-TextField-input--multiline"),
+                    By.CssSelector("textarea")
                 };
                 foreach (var sel in selectors)
                 {
@@ -373,48 +402,48 @@ namespace Work
                         if (isTextarea)
                         {
                             js.ExecuteScript(@"
-						const el = arguments[0], v = arguments[1];
-						const last = el.value;
-						try {
-							const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
-							setter.call(el, v);
-						} catch(e) {
-							el.value = v;
-						}
-						if (el._valueTracker) {
-							el._valueTracker.setValue(last);
-						}
-						el.dispatchEvent(new Event('input', { bubbles: true }));
-						el.dispatchEvent(new Event('change', { bubbles: true }));
-					", input, message);
+                                const el = arguments[0], v = arguments[1];
+                                const last = el.value;
+                                try {
+                                    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+                                    setter.call(el, v);
+                                } catch(e) {
+                                    el.value = v;
+                                }
+                                if (el._valueTracker) {
+                                    el._valueTracker.setValue(last);
+                                }
+                                el.dispatchEvent(new Event('input', { bubbles: true }));
+                                el.dispatchEvent(new Event('change', { bubbles: true }));
+                            ", input, message);
                         }
                         else if (isContentEditable)
                         {
                             js.ExecuteScript(@"
-						const el = arguments[0], v = arguments[1];
-						el.innerText = v;
-						el.dispatchEvent(new Event('input', { bubbles: true }));
-						el.dispatchEvent(new Event('change', { bubbles: true }));
-					", input, message);
+                                const el = arguments[0], v = arguments[1];
+                                el.innerText = v;
+                                el.dispatchEvent(new Event('input', { bubbles: true }));
+                                el.dispatchEvent(new Event('change', { bubbles: true }));
+                            ", input, message);
                         }
                         else
                         {
                             js.ExecuteScript(@"
-						const el = arguments[0], v = arguments[1];
-						try {
-							if ('value' in el) {
-								const last = el.value;
-								el.value = v;
-								if (el._valueTracker) {
-									el._valueTracker.setValue(last);
-								}
-							} else {
-								el.innerText = v;
-							}
-						} catch(e) {}
-						el.dispatchEvent(new Event('input', { bubbles: true }));
-						el.dispatchEvent(new Event('change', { bubbles: true }));
-					", input, message);
+                                const el = arguments[0], v = arguments[1];
+                                try {
+                                    if ('value' in el) {
+                                        const last = el.value;
+                                        el.value = v;
+                                        if (el._valueTracker) {
+                                            el._valueTracker.setValue(last);
+                                        }
+                                    } else {
+                                        el.innerText = v;
+                                    }
+                                } catch(e) {}
+                                el.dispatchEvent(new Event('input', { bubbles: true }));
+                                el.dispatchEvent(new Event('change', { bubbles: true }));
+                            ", input, message);
                         }
 
                         js.ExecuteScript("arguments[0].focus();", input);
@@ -454,36 +483,183 @@ namespace Work
 
             await Task.Delay(1500);
         }
+
+        // ===================== Etsy: выбор вариаций =====================
+
+        private async Task AutoSelectEtsyVariations(List<string> etsyLinks)
+        {
+            if (driver == null) throw new InvalidOperationException("WebDriver не инициализирован.");
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(25));
+
+            foreach (var url in etsyLinks)
+            {
+                try
+                {
+                    NavigateFast(url);
+                    wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState")?.ToString() == "complete");
+                    TryAcceptCookies_Etsy(driver);
+
+                    SelectAllVariations(driver, wait); // ключевая логика
+
+                    // Скриншот результата
+                    var shot = ((ITakesScreenshot)driver).GetScreenshot();
+                    var file = $"etsy_{SanitizeFileName(url)}.png";
+                    var outPath = Path.Combine(Application.StartupPath, file);
+
+                    AppendLogUi($"[OK][Etsy] Вариации выбраны: {url}. Скрин: {file}");
+                }
+                catch (Exception ex)
+                {
+                    AppendLogUi($"[ERR][Etsy] {url}: {ex.Message}");
+                }
+            }
+            await Task.CompletedTask;
+        }
+
+        private void SelectAllVariations(IWebDriver driver, WebDriverWait wait, int maxRounds = 10)
+        {
+            for (int round = 0; round < maxRounds; round++)
+            {
+                bool changedAnything = false;
+
+                var selects = driver.FindElements(By.CssSelector(
+                        "select[id^='variation-selector-'], " +
+                        "select[data-variation-number], " +
+                        "select[name*='variation']"))
+                    .Select(s => (el: s, idx: ParseIndex(s.GetAttribute("id"))))
+                    .OrderBy(t => t.idx)
+                    .Select(t => t.el)
+                    .ToList();
+
+                if (selects.Count == 0)
+                    break;
+
+                foreach (var s in selects)
+                {
+                    try
+                    {
+                        WaitForOptionsToAppear(driver, s, minRealOptions: 1, maxWaitSeconds: 15);
+                        var sel = new SelectElement(s);
+
+                        var curTxt = (sel.SelectedOption?.Text ?? "").Trim();
+                        var curVal = (sel.SelectedOption?.GetAttribute("value") ?? "").Trim();
+                        if (!string.IsNullOrEmpty(curVal) && !IsPlaceholderText(curTxt))
+                            continue;
+
+                        if (ChooseFirstAvailableOption(driver, sel, s))
+                        {
+                            var shortWait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                            shortWait.Until(_ =>
+                            {
+                                try
+                                {
+                                    var se = new SelectElement(s);
+                                    var v = (se.SelectedOption?.GetAttribute("value") ?? "").Trim();
+                                    var t = (se.SelectedOption?.Text ?? "").Trim();
+                                    return !string.IsNullOrWhiteSpace(v) && !IsPlaceholderText(t);
+                                }
+                                catch (StaleElementReferenceException) { return true; }
+                            });
+
+                            RandomJitter(200, 500);
+                            changedAnything = true;
+                        }
+                        else
+                        {
+                            DumpSelect("Не удалось выбрать (нет подходящих опций)", s, sel, driver);
+                        }
+                    }
+                    catch (WebDriverTimeoutException)
+                    {
+                        DumpSelect("Таймаут ожидания появления реальных опций", s, SafeSelect(s), driver);
+                    }
+                    catch (StaleElementReferenceException)
+                    {
+                        changedAnything = true;
+                    }
+                    catch (NoSuchElementException) { }
+                }
+
+                if (!changedAnything)
+                    break;
+            }
+
+            var remaining = driver.FindElements(By.CssSelector(
+                    "select[id^='variation-selector-'], select[data-variation-number], select[name*='variation']"))
+                .Where(s =>
+                {
+                    try
+                    {
+                        var se = new SelectElement(s);
+                        var val = (se.SelectedOption?.GetAttribute("value") ?? "").Trim();
+                        var txt = (se.SelectedOption?.Text ?? "").Trim();
+                        return string.IsNullOrEmpty(val) || IsPlaceholderText(txt);
+                    }
+                    catch { return false; }
+                }).ToList();
+
+            if (remaining.Count > 0)
+            {
+                AppendLogUi("Внимание: не все вариации выбраны:");
+                foreach (var r in remaining)
+                {
+                    var id = r.GetAttribute("id") ?? r.GetAttribute("name") ?? "<select>";
+                    var se = SafeSelect(r);
+                    DumpSelect($"Остался незаполненным: {id}", r, se, driver);
+                }
+            }
+            else
+            {
+                AppendLogUi("Все вариации выбраны успешно.");
+            }
+        }
+
+        // ===================== Браузер/опции/куки =====================
+
         private ChromeOptions BuildChromeOptionsWithProxy()
         {
-            ChromeOptions options = new ChromeOptions();
-            var proxy = proxyBox.Text;
-            options.AddArgument($"--proxy-server={proxy}");
+            var options = new ChromeOptions();
 
-            options.AddArgument("ignore-certificate-errors");
+            options.AddArgument("--start-maximized");
+            // В большинстве случаев — лучше БЕЗ этого флага. Если нужно — раскомментируйте.
+            // options.AddArgument("--disable-blink-features=AutomationControlled");
+
+            // Локаль под Etsy /uk/
+            options.AddArgument("--lang=en-GB");
+            options.AddUserProfilePreference("intl.accept_languages", "en-GB,en");
+
+            // Персистентный профиль — меньше блокировок, хранит куки
+            Directory.CreateDirectory(chromeProfileDir);
+            options.AddArgument($"--user-data-dir={chromeProfileDir}");
+
+            // Прокси — только если указан
+            var proxy = proxyBox.Text?.Trim();
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                options.AddArgument($"--proxy-server={proxy}");
+                options.AddArgument("ignore-certificate-errors");
+            }
+
             return options;
         }
 
-
         private void RestartDriver()
         {
-            try
-            {
-                driver?.Quit();
-            }
-            catch { }
-            try
-            {
-                driver?.Dispose();
-            }
-            catch { }
+            try { driver?.Quit(); } catch { }
+            try { driver?.Dispose(); } catch { }
             driver = null;
         }
 
+        // ===================== Общие утилиты =====================
+
         private static void ScrollIntoView(IWebDriver driver, IWebElement element)
         {
-            ((IJavaScriptExecutor)driver)
-                .ExecuteScript("arguments[0].scrollIntoView({block:'center', inline:'center'});", element);
+            try
+            {
+                ((IJavaScriptExecutor)driver)
+                    .ExecuteScript("arguments[0].scrollIntoView({block:'center', inline:'center'});", element);
+            }
+            catch { }
         }
 
         private static void SafeClick(IWebDriver driver, WebDriverWait wait, IWebElement element)
@@ -511,54 +687,91 @@ namespace Work
             });
         }
 
-        private static void TryAcceptCookies(IWebDriver driver, WebDriverWait wait)
+        private void TryAcceptCookies_Marktplaats(IWebDriver driver)
         {
-            driver.SwitchTo().DefaultContent();
-
-            bool ClickIfFound()
+            try
             {
-                var selectors = new[]
+                driver.SwitchTo().DefaultContent();
+
+                bool ClickIfFound()
                 {
-                    "//button[@title='Accepteren' or normalize-space()='Accepteren' or normalize-space()='Akkoord' or @data-testid='accept-all']",
-                    "//button[contains(.,'Akkoord')]",
-                    "//button[contains(.,'Accepteer')]",
-                };
-                foreach (var xp in selectors)
-                {
-                    var btn = driver.FindElements(By.XPath(xp))
-                        .FirstOrDefault(e => e.Displayed && e.Enabled);
-                    if (btn != null)
+                    var selectors = new[]
                     {
-                        try { btn.Click(); }
-                        catch { ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", btn); }
-                        return true;
+                        "//button[@title='Accepteren' or normalize-space()='Accepteren' or normalize-space()='Akkoord' or @data-testid='accept-all']",
+                        "//button[contains(.,'Akkoord')]",
+                        "//button[contains(.,'Accepteer')]",
+                    };
+                    foreach (var xp in selectors)
+                    {
+                        var btn = driver.FindElements(By.XPath(xp))
+                            .FirstOrDefault(e => e.Displayed && e.Enabled);
+                        if (btn != null)
+                        {
+                            try { btn.Click(); }
+                            catch { ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", btn); }
+                            return true;
+                        }
                     }
+                    return false;
                 }
-                return false;
-            }
 
-            if (ClickIfFound())
-                return;
+                if (ClickIfFound()) return;
 
-            var frames = driver.FindElements(By.TagName("iframe"));
-            foreach (var frame in frames)
-            {
-                try
+                var frames = driver.FindElements(By.TagName("iframe"));
+                foreach (var frame in frames)
                 {
-                    driver.SwitchTo().Frame(frame);
-                    if (ClickIfFound())
+                    try
+                    {
+                        driver.SwitchTo().Frame(frame);
+                        if (ClickIfFound())
+                        {
+                            driver.SwitchTo().DefaultContent();
+                            return;
+                        }
+                    }
+                    catch { }
+                    finally
                     {
                         driver.SwitchTo().DefaultContent();
-                        return;
                     }
                 }
-                catch { }
-                finally
+            }
+            catch { }
+        }
+
+        private void TryAcceptCookies_Etsy(IWebDriver driver)
+        {
+            try
+            {
+                // прямой поиск
+                IWebElement btn =
+                    driver.FindElements(By.CssSelector("button[data-gdpr-single-choice-accept], [data-gdpr-accept]")).FirstOrDefault()
+                    ?? driver.FindElements(By.XPath("//button[contains(., 'Accept') or contains(., 'Agree') or contains(., 'OK')]")).FirstOrDefault();
+
+                if (btn == null)
                 {
-                    driver.SwitchTo().DefaultContent();
+                    // иногда в iframe
+                    var iframe = driver.FindElements(By.CssSelector("iframe[src*='consent'], iframe[id*='gdpr'], iframe[title*='privacy']")).FirstOrDefault();
+                    if (iframe != null)
+                    {
+                        driver.SwitchTo().Frame(iframe);
+                        btn = driver.FindElements(By.CssSelector("button[data-gdpr-single-choice-accept], [data-gdpr-accept]")).FirstOrDefault()
+                           ?? driver.FindElements(By.XPath("//button[contains(., 'Accept') or contains(., 'Agree') or contains(., 'OK')]")).FirstOrDefault();
+                    }
+                }
+
+                if (btn != null)
+                {
+                    ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", btn);
                 }
             }
+            catch { }
+            finally
+            {
+                try { driver.SwitchTo().DefaultContent(); } catch { }
+            }
         }
+
         private static string NormalizeUrlForKey(string url)
         {
             try
@@ -639,7 +852,6 @@ namespace Work
             return (urls, map);
         }
 
-
         private static Dictionary<string, string> LoadLinkTextMap(string filePath)
         {
             var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -694,11 +906,11 @@ namespace Work
                 {
                     var domain = (c.Domain ?? "marktplaats.nl").Trim();
                     if (domain.StartsWith(".")) domain = domain.Substring(1);
-                    if (string.IsNullOrWhiteSpace(c.Path)) c.Path = "/";
+                    var path = string.IsNullOrWhiteSpace(c.Path) ? "/" : c.Path;
 
                     Cookie cookie = c.Expiry.HasValue
-                        ? new Cookie(c.Name, c.Value, domain, c.Path, c.Expiry)
-                        : new Cookie(c.Name, c.Value, domain, c.Path, null);
+                        ? new Cookie(c.Name, c.Value, domain, path, c.Expiry)
+                        : new Cookie(c.Name, c.Value, domain, path, null);
 
                     driver.Manage().Cookies.AddCookie(cookie);
                 }
@@ -709,7 +921,7 @@ namespace Work
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            driver?.Quit();
+            try { driver?.Quit(); } catch { }
         }
 
         private void Form1_Load_1(object sender, EventArgs e)
@@ -722,17 +934,228 @@ namespace Work
                 listBoxCookies.Items.Add(Path.GetFileNameWithoutExtension(file));
             }
         }
+
+        private void AppendLogUi(string text)
+        {
+            try
+            {
+                if (IsHandleCreated)
+                {
+                    Invoke(new Action(() =>
+                    {
+                        smsBox.Items.Add(text);
+                        smsBox.TopIndex = smsBox.Items.Count - 1;
+                    }));
+                }
+            }
+            catch { }
+        }
+
+        private static string SanitizeFileName(string input)
+        {
+            var safe = Regex.Replace(input ?? "", @"[^\w\-\.]+", "_");
+            if (safe.Length > 120) safe = safe.Substring(0, 120);
+            return safe;
+        }
+
+        private static string SafeGetHost(string url)
+        {
+            try { return new Uri(url).Host.ToLowerInvariant(); }
+            catch { return ""; }
+        }
+
+        // ===================== Etsy хелперы =====================
+
+        private static SelectElement SafeSelect(IWebElement s)
+        {
+            try { return new SelectElement(s); }
+            catch { return null; }
+        }
+
+        private static void WaitForOptionsToAppear(IWebDriver driver, IWebElement selectEl, int minRealOptions, int maxWaitSeconds)
+        {
+            var localWait = new WebDriverWait(driver, TimeSpan.FromSeconds(maxWaitSeconds));
+            localWait.Until(_ =>
+            {
+                try
+                {
+                    var count = (long)((IJavaScriptExecutor)driver).ExecuteScript(@"
+                        const el = arguments[0];
+                        if (!el || !el.options) return 0;
+                        let n = 0;
+                        for (let i=0;i<el.options.length;i++){
+                            const o = el.options[i];
+                            if ((o.value||'').trim().length > 0) n++;
+                        }
+                        return n;
+                    ", selectEl);
+                    return count >= minRealOptions;
+                }
+                catch { return false; }
+            });
+        }
+
+        private static bool ChooseFirstAvailableOption(IWebDriver driver, SelectElement sel, IWebElement selectEl)
+        {
+            var best = sel.Options.FirstOrDefault(o => IsValidOption(driver, o));
+            if (best != null)
+                return TrySelectByValue(sel, selectEl, (best.GetAttribute("value") ?? "").Trim(), driver);
+
+            var firstNonEmpty = sel.Options.FirstOrDefault(o => !string.IsNullOrWhiteSpace((o.GetAttribute("value") ?? "").Trim()));
+            if (firstNonEmpty != null)
+                return TrySelectByValue(sel, selectEl, (firstNonEmpty.GetAttribute("value") ?? "").Trim(), driver);
+
+            try
+            {
+                var ok = (bool?)((IJavaScriptExecutor)driver).ExecuteScript(@"
+                    const el = arguments[0];
+                    if (!el || !el.options || el.options.length < 2) return false;
+                    el.selectedIndex = 1;
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                    return true;
+                ", selectEl) == true;
+                return ok;
+            }
+            catch { return false; }
+        }
+
+        private static bool TrySelectByValue(SelectElement sel, IWebElement selectEl, string value, IWebDriver driver)
+        {
+            try
+            {
+                sel.SelectByValue(value);
+                return true;
+            }
+            catch (InvalidOperationException)
+            {
+                try
+                {
+                    ((IJavaScriptExecutor)driver).ExecuteScript(@"
+                        const el = arguments[0], v = arguments[1];
+                        el.value = v;
+                        el.dispatchEvent(new Event('input', { bubbles: true }));
+                        el.dispatchEvent(new Event('change', { bubbles: true }));
+                    ", selectEl, value);
+                    return true;
+                }
+                catch { return false; }
+            }
+        }
+
+        private static bool IsValidOption(IWebDriver driver, IWebElement opt)
+        {
+            if (opt == null) return false;
+
+            var val = (opt.GetAttribute("value") ?? "").Trim();
+            if (string.IsNullOrEmpty(val)) return false;
+
+            var text = (opt.Text ?? "").Trim();
+            if (IsPlaceholderText(text)) return false;
+            if (IsSoldOutText(text)) return false;
+
+            var dataFlags = new[]
+            {
+                "data-sold-out", "data-unavailable", "data-disabled", "data-is-sold-out",
+                "data-out-of-stock", "data-inventory-unavailable"
+            };
+            foreach (var f in dataFlags)
+            {
+                var v = opt.GetAttribute(f);
+                if (!string.IsNullOrEmpty(v) && v.Equals("true", StringComparison.OrdinalIgnoreCase))
+                    return false;
+            }
+
+            var cls = (opt.GetAttribute("class") ?? "").ToLowerInvariant();
+            if (cls.Contains("sold") || cls.Contains("unavailable") || cls.Contains("disabled"))
+                return false;
+
+            if (!opt.Enabled) return false;
+            if (opt.GetAttribute("disabled") != null) return false;
+            if (string.Equals(opt.GetAttribute("aria-disabled"), "true", StringComparison.OrdinalIgnoreCase)) return false;
+
+            try
+            {
+                var domDisabled = (bool?)((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].disabled===true;", opt) == true;
+                if (domDisabled) return false;
+            }
+            catch { }
+
+            return true;
+        }
+
+        private static bool IsPlaceholderText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return true;
+            var t = Regex.Replace(text, @"\s+", " ").Trim();
+
+            return Regex.IsMatch(t, @"^(Select|Choose|Please select|Choose an option)\b", RegexOptions.IgnoreCase)
+                || Regex.IsMatch(t, @"^(Выберите|Пожалуйста, выберите)\b", RegexOptions.IgnoreCase)
+                || Regex.IsMatch(t, @"^(Auswählen|Choisir|Seleziona|Selecciona|Selecionar)\b", RegexOptions.IgnoreCase);
+        }
+
+        private static bool IsSoldOutText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return false;
+            var t = text.ToLowerInvariant();
+            return t.Contains("sold out") || t.Contains("out of stock")
+                || t.Contains("нет в наличии") || t.Contains("распродано")
+                || t.Contains("niet op voorraad") || t.Contains("esgotado")
+                || t.Contains("agotado") || t.Contains("non disponibile")
+                || t.Contains("ausverkauft");
+        }
+
+        private static int ParseIndex(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return int.MaxValue;
+            var m = Regex.Match(id, @"variation-selector-(\d+)");
+            return m.Success ? int.Parse(m.Groups[1].Value) : int.MaxValue;
+        }
+
+        private static void RandomJitter(int minMs, int maxMs)
+        {
+            var r = new Random();
+            Thread.Sleep(r.Next(minMs, maxMs));
+        }
+
+        private static void DumpSelect(string title, IWebElement selectEl, SelectElement sel, IWebDriver driver)
+        {
+            try
+            {
+                var id = selectEl.GetAttribute("id");
+                var name = selectEl.GetAttribute("name");
+                Console.WriteLine($"[{title}] select id='{id}' name='{name}'");
+                int i = 0;
+                foreach (var o in sel?.Options ?? new List<IWebElement>())
+                {
+                    var val = (o.GetAttribute("value") ?? "").Trim();
+                    var txt = (o.Text ?? "").Trim();
+                    var disabledAttr = o.GetAttribute("disabled");
+                    var aria = o.GetAttribute("aria-disabled");
+                    var ds1 = o.GetAttribute("data-sold-out");
+                    var ds2 = o.GetAttribute("data-unavailable");
+                    var ds3 = o.GetAttribute("data-disabled");
+                    var ds4 = o.GetAttribute("data-is-sold-out");
+                    bool enabledProp = false, domDisabled = false;
+                    try { enabledProp = o.Enabled; } catch { }
+                    try { domDisabled = (bool?)((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].disabled===true;", o) == true; } catch { }
+
+                    var valid = IsValidOption(driver, o);
+                    Console.WriteLine($"  [{i++}] val='{val}' txt='{txt}' enabled={enabledProp} disabledAttr={(disabledAttr != null)} aria={aria} dataSoldOut={ds1 ?? ds4} dataUnavail={ds2} dataDisabled={ds3} domDisabled={domDisabled} -> valid={valid}");
+                }
+            }
+            catch { /* ignore */ }
+        }
     }
 
     public class SerializableCookie
-	{
-		public string Name { get; set; } = "";
-		public string Value { get; set; } = "";
-		public string Domain { get; set; } = "";
-		public string Path { get; set; } = "/";
-		public DateTime? Expiry { get; set; } 
-		public bool HttpOnly { get; set; }
-		public bool Secure { get; set; }
-	}
-
+    {
+        public string Name { get; set; } = "";
+        public string Value { get; set; } = "";
+        public string Domain { get; set; } = "";
+        public string Path { get; set; } = "/";
+        public DateTime? Expiry { get; set; }  // <-- добавлена пропущенная ; в исходнике
+        public bool HttpOnly { get; set; }
+        public bool Secure { get; set; }
+    }
 }

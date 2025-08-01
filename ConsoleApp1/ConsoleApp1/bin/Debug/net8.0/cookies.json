@@ -1,0 +1,200 @@
+[
+  {
+    "Name": "_uetsid",
+    "Value": "b4dae1806eb011f0b63e2ffec26d8721",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2025-08-02T16:25:08+08:00",
+    "Secure": false,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "et-v1-1-1-_etsy_com",
+    "Value": "2%3A1de9beb71c9afb281c491e27b4074efb5ab9941a%3A1754036706%3A1754036706%3A__athena_compat-1118004431-1398409338499-03efc4ec490bef699de7c2fe3c34da1d2a470853a55c0dfe4596f1283b3ff05ac34b5853881fe19a",
+    "Domain": "www.etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-01T16:25:05+08:00",
+    "Secure": true,
+    "IsHttpOnly": true
+  },
+  {
+    "Name": "_gcl_au",
+    "Value": "1.1.1112094301.1754036566.638210794.1754036576.1754036679",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2025-10-30T16:22:46+08:00",
+    "Secure": false,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "_ga_KR3J610VYM",
+    "Value": "GS2.1.s1754036566$o1$g1$t1754036708$j29$l0$h0",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2026-09-01T08:43:28+08:00",
+    "Secure": false,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "_pin_unauth",
+    "Value": "dWlkPVpEUXlNbVExTURRdFl6STVOUzAwTkRjNExUbGxaRGN0TkRFd04yTTBZMlZqTWpObQ",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-01T16:25:09+08:00",
+    "Secure": false,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "lantern",
+    "Value": "0086d729-7ad7-4345-9543-381684f7edf0",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2025-09-30T16:22:48+08:00",
+    "Secure": false,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "datadome",
+    "Value": "umSIn4qeMplVBZSdGhMlHSgRxIhgrOZ4f1i7x56WyKGg0mTa5bbps4WqNqOMYU31b3vJDYtkQT6Etuycfcz3UxKe9NpDjVpqAGJIpisvuGTBu82a7ruLW8Iz3rD9Mgy_",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-01T16:25:09+08:00",
+    "Secure": true,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "p",
+    "Value": "eyJnZHByX3RwIjoxLCJnZHByX3AiOjEsIkFkdmVydGlzaW5nIjoxLCJGdW5jdGlvbmFsIjoxfQ..",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-01T16:22:45+08:00",
+    "Secure": false,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "_uetvid",
+    "Value": "b4daf7206eb011f0b9335967ecc49919",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-26T16:25:08+08:00",
+    "Secure": false,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "session-key-www",
+    "Value": "1118004431-1398409338499-16bcd82e627ec059096dea5408c46450e139b024ebbc5a0dcd10b0ee|1761812708",
+    "Domain": ".www.etsy.com",
+    "Path": "/",
+    "Expiry": "2025-10-30T16:25:07+08:00",
+    "Secure": true,
+    "IsHttpOnly": true
+  },
+  {
+    "Name": "user_prefs",
+    "Value": "uStUFTbXazhbcsr1rhZtDHFQuzBjZACCjJ7IXzA6Wsk1NEhJJ680J0dHqahUSUfJzwfKNYJQuIhYBgA.",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-01T14:08:58+08:00",
+    "Secure": true,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "ua",
+    "Value": "531227642bc86f3b5fd7103a0c0b4fd6",
+    "Domain": "www.etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-01T16:25:08+08:00",
+    "Secure": false,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "exp_ebid",
+    "Value": "m=Hr%2FKiCO4KR2zosy1ivt3qThfuVRLrw%2BCvLVtGSfyfXg%3D,v=7saSELM9eZS_WkAjD_2JvKUsOJxSBHGC",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2025-09-30T16:25:12+08:00",
+    "Secure": true,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "uaid",
+    "Value": "oAwVYNlUyoywDfypsF7MMx3QonpjZACCjJ7IXzC6Wqk0MTNFyUrJNTAk3tjLMCLYoNzVMizfPaPAM9zAxN_UsLTSWKmWAQA.",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-01T14:08:58+08:00",
+    "Secure": true,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "et-v1-1-1-_etsy_com",
+    "Value": "2%3A4917fa63b378c2c411f5024944a9b36e7d371ec3%3A1754028629%3A1754028629%3A__athena_compat-1117986327-1398118924726-4824cfaf9d6ae0a75517c55828faea65267520e7c425b79858f704010e84ec16205a8b2696af1d36",
+    "Domain": ".www.etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-01T14:10:29+08:00",
+    "Secure": true,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "fve",
+    "Value": "1754028538.0",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2026-09-01T08:43:29+08:00",
+    "Secure": true,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "_fbp",
+    "Value": "fb.1.1754036566074.3698219245127157",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2025-10-30T16:25:08+08:00",
+    "Secure": true,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "last_browse_page",
+    "Value": "https%3A%2F%2Fwww.etsy.com%2F",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": null,
+    "Secure": false,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "_ga",
+    "Value": "GA1.1.855166548.1754036567",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2026-09-01T08:43:28+08:00",
+    "Secure": false,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "ua",
+    "Value": "531227642bc86f3b5fd7103a0c0b4fd6",
+    "Domain": ".www.etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-01T14:10:31+08:00",
+    "Secure": true,
+    "IsHttpOnly": false
+  },
+  {
+    "Name": "session-key-apex",
+    "Value": "1118004431-1398409338499-4a6fe0273f23fdcd4bf4354d8d130bdeab11f752ba9cccd748b0ad8f|1761812708",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2025-10-30T16:25:07+08:00",
+    "Secure": true,
+    "IsHttpOnly": true
+  },
+  {
+    "Name": "LD",
+    "Value": "1",
+    "Domain": ".etsy.com",
+    "Path": "/",
+    "Expiry": "2026-08-01T16:25:05+08:00",
+    "Secure": false,
+    "IsHttpOnly": false
+  }
+]
